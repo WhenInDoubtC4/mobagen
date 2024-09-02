@@ -5,8 +5,14 @@ Vector2f AlignmentRule::computeForce(const std::vector<Boid*>& neighborhood, Boi
   // Try to match the heading of neighbors = Average velocity
   Vector2f averageVelocity = Vector2f::zero();
 
-  // todo: add your code here to align each boid in a neighborhood
-  // hint: iterate over the neighborhood
+  if (neighborhood.empty()) return averageVelocity;
+
+  for (Boid* neighborBoid : neighborhood)
+  {
+    averageVelocity += neighborBoid->getVelocity();
+  }
+
+  averageVelocity /= float(neighborhood.size());
 
   return Vector2f::normalized(averageVelocity);
 }
