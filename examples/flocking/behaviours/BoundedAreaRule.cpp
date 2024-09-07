@@ -3,14 +3,24 @@
 #include "../gameobjects/World.h"
 #include "engine/Engine.h"
 
-Vector2f BoundedAreaRule::computeForce(const std::vector<Boid*>& neighborhood, Boid* boid) {
+Vector2f BoundedAreaRule::computeForce(const std::vector<Boid*>& neighborhood, Boid* boid) 
+{
   // Return a force proportional to the proximity of the boids with the bounds, and opposed to it
   Vector2f force = Vector2f::zero();  // zero
 
-  // todo: add here your code code here do make the boid follow the bounded box rule
-  // hint: use this->world->engine->window->size() and desiredDistance
+  Point2D boundingBox = world->engine->window->size();
+  float left = desiredDistance;
+  float right = boundingBox.x - desiredDistance;
+  float top = desiredDistance;
+  float bottom = boundingBox.y - desiredDistance;
 
-  return force;
+  Vector2f boidPos = boid->getPosition();
+  float nearestx = fmax(fmin(boidPos.x, right), left);
+  float nearesty = fmax(fmin(boidPos.y, bottom), top);
+  Vector2f dir = Vector2f(nearestx, nearesty) - boidPos;
+
+  float dist = dir.getMagnitude();
+  return dist > 0.f && dist <= desiredDistance ? dir.normalized() / dist : Vector2f::zero();
 }
 
 bool BoundedAreaRule::drawImguiRuleExtra() {
