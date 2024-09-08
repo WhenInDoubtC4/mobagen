@@ -3,6 +3,8 @@
 
 Vector2f CohesionRule::computeForce(const std::vector<Boid*>& neighborhood, Boid* boid) 
 {
+  if (neighborhood.empty()) return Vector2f::zero();
+
   Vector2f cohesionForce;
 
   //Calculate center of mass
@@ -17,7 +19,7 @@ Vector2f CohesionRule::computeForce(const std::vector<Boid*>& neighborhood, Boid
   Vector2f direction = centerOfMass - boid->getPosition();
   Vector2f rawForce = direction / boid->getDetectionRadius();
 
-  cohesionForce = direction.getMagnitude() <= boid->getDetectionRadius() ? rawForce : Vector2f::zero();
+  cohesionForce = direction.getMagnitude() > 0.f && direction.getMagnitude() <= boid->getDetectionRadius() ? rawForce : Vector2f::zero();
   cohesionForce *= weight;
 
   return cohesionForce;
