@@ -13,6 +13,8 @@ private:
   inline std::vector<bool>& currentBuffer() { return buffer[currentBufferId % 2]; }
   inline std::vector<bool>& nextBuffer() { return buffer[(currentBufferId + 1) % 2]; }
 
+  int clampIndex(int index, int limit);
+
 public:
   inline const int& SideSize() const { return sideSize; };
   void Resize(int sideSize);
