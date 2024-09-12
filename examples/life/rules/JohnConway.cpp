@@ -12,17 +12,19 @@ void JohnConway::Step(World& world)
             int liveNeighbors = CountNeighbors(world, current);
 
 			//Is cell alive
-            if (world.Get(current)) {
-              // Any live cell with fewer than two live neighbours dies, as if by underpopulation.
+            if (world.Get(current)) 
+			{
+              //Any live cell with fewer than two live neighbours dies, as if by underpopulation.
               if (liveNeighbors < 2) world.SetNext(current, false);
 
-              // Any live cell with two or three live neighbours lives on to the next generation. (do nothing)
+              //Any live cell with two or three live neighbours lives on to the next generation.
+              if (liveNeighbors == 2 || liveNeighbors == 3) world.SetNext(current, true);
 
-              // Any live cell with more than three live neighbours dies, as if by overpopulation
+              //Any live cell with more than three live neighbours dies, as if by overpopulation
               if (liveNeighbors > 3) world.SetNext(current, false);
             }
-            // Any dead cell with exactly three live neighbours becomes a live cell, as if by reproduction.
-            else if (liveNeighbors == 3) world.SetNext(current, true);
+            //Any dead cell with exactly three live neighbours becomes a live cell, as if by reproduction.
+            else if (liveNeighbors == 3)  world.SetNext(current, true);
 		}
 	}
 }
