@@ -3,16 +3,18 @@
 #include "RecursiveBacktrackerExample.h"
 #include <climits>
 #include <functional>
+#include <random>
 
+//Nasty, but necessary
 const std::function<void(World&, const Point2D&, const bool&)> INDEX_TO_NEIGHBOR[] = { &World::SetNorth, &World::SetEast, &World::SetSouth, &World::SetWest};
 
 bool RecursiveBacktrackerExample::Step(World* w) {
-  static bool isFirstStep = true;
+  static std::random_device device;
+  static std::mt19937 mt(device());
+  static std::uniform_int_distribution dist(0, 4);
 
-  if (isFirstStep)
+  if (stack.empty())
   {
-    isFirstStep = false;
-
     //Add top left cell to stack
     auto sideOver2 = w->GetSize() / 2;
     stack.push_back(Point2D(-sideOver2, -sideOver2));
@@ -25,22 +27,20 @@ bool RecursiveBacktrackerExample::Step(World* w) {
   if (stack.empty()) return false;
 
   Point2D& topCell = stack.back();
+  w->SetNodeColor(topCell, Color32(255, 0, 0));
+  visited[topCell.y][topCell.x] = true;
+
   std::vector<std::pair<Point2D, int>> visitableNeighbors = getVisitables(w, topCell);
 
   if (!visitableNeighbors.empty())
   {
-    //Mark top as visited
-    w->SetNodeColor(topCell, Color32(255, 0, 0));
-    visited[topCell.y][topCell.x] = true;
-
-    //TODO: Change this
-    std::pair<Point2D, int>& selectedNeighbor = visitableNeighbors[0];
+    std::pair<Point2D, int>& selectedNeighbor = visitableNeighbors[dist(mt) % visitableNeighbors.size()];
 
     //Remove wall
     INDEX_TO_NEIGHBOR[selectedNeighbor.second](*w, topCell, false);
 
     //Add the neighbor to the stack
-    w->SetNodeColor(topCell, Color32(0, 0, 0));
+    w->SetNodeColor(selectedNeighbor.first, Color32(255, 255, 0));
     stack.push_back(selectedNeighbor.first);
 
     return true;
@@ -48,7 +48,7 @@ bool RecursiveBacktrackerExample::Step(World* w) {
   else
   {
     //Backtrack once (set color to black)
-    w->SetNodeColor(topCell, Color32(255, 0, 0));
+    w->SetNodeColor(topCell, Color32(0, 0, 0));
     stack.pop_back();
     return true;
   }
@@ -84,8 +84,7 @@ std::vector<std::pair<Point2D, int>> RecursiveBacktrackerExample::getVisitables(
   if (p.y > -sideOver2 && !visited[p.y - 1][p.x]) visitables.emplace_back(Point2D(p.x, p.y - 1), 0);
 
   //Right
-  if (p.x < sideOver2 && !visited[p.y][p.x + 1])
-    visitables.emplace_back(Point2D(p.x + 1, p.y), 1);
+  if (p.x < sideOver2 && !visited[p.y][p.x + 1]) visitables.emplace_back(Point2D(p.x + 1, p.y), 1);
 
   //Down
   if (p.y < sideOver2 && !visited[p.y + 1][p.x]) visitables.emplace_back(Point2D(p.x, p.y + 1), 2);
