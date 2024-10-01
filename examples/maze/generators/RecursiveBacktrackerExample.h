@@ -12,7 +12,7 @@ private:
   std::vector<Point2D> stack;
   std::map<int, std::map<int, bool>> visited;  // naive. not optimal
   Point2D randomStartPoint(World* world);
-  std::vector<std::pair<Point2D, int>> getVisitables(World* w, const Point2D& p);
+  std::vector<std::pair<Point2D, int>> getNeighbors(World* w, const Point2D& p);
 
 public:
   RecursiveBacktrackerExample() = default;

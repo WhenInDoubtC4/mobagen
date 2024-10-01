@@ -16,7 +16,7 @@ bool RecursiveBacktrackerExample::Step(World* w) {
     stack.push_back(Point2D(-sideOver2, -sideOver2));
 
     //Did not modify the world (yet)
-    return false;
+    return true;
   }
 
   //There's nothing more to generate
@@ -26,7 +26,7 @@ bool RecursiveBacktrackerExample::Step(World* w) {
   w->SetNodeColor(topCell, Color32(255, 0, 0));
   visited[topCell.y][topCell.x] = true;
 
-  std::vector<std::pair<Point2D, int>> visitableNeighbors = getVisitables(w, topCell);
+  std::vector<std::pair<Point2D, int>> visitableNeighbors = getNeighbors(w, topCell);
 
   if (!visitableNeighbors.empty())
   {
@@ -72,7 +72,7 @@ Point2D RecursiveBacktrackerExample::randomStartPoint(World* world) {
   return {INT_MAX, INT_MAX};
 }
 
-std::vector<std::pair<Point2D, int>> RecursiveBacktrackerExample::getVisitables(World* w, const Point2D& p) {
+std::vector<std::pair<Point2D, int>> RecursiveBacktrackerExample::getNeighbors(World* w, const Point2D& p) {
   auto sideOver2 = w->GetSize() / 2;
   std::vector<std::pair<Point2D, int>> visitables;
 

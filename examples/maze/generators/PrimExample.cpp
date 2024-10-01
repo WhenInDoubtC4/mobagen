@@ -20,7 +20,7 @@ bool PrimExample::Step(World* w) {
 
     previous = startPoint;
     visited.insert(startPoint);
-    toBeVisited.insert_range(getVisitables(w, startPoint));
+    toBeVisited.insert_range(getNeighbors(w, startPoint));
 
     w->SetNodeColor(startPoint, Color32(255, 255, 0));
 
@@ -40,7 +40,7 @@ bool PrimExample::Step(World* w) {
   //Mark its visited and add any new(!) neighbors to be visited
   toBeVisited.erase(nextPoint);
   visited.insert(nextPoint);
-  toBeVisited.insert_range(getVisitables(w, nextPoint));
+  toBeVisited.insert_range(getNeighbors(w, nextPoint));
 
   updateVisitedNeighbors(w, nextPoint);
 
@@ -56,7 +56,7 @@ void PrimExample::Clear(World* world) {
   initialized = false;
 }
 
-std::vector<Point2D> PrimExample::getVisitables(World* w, const Point2D& p) {
+std::vector<Point2D> PrimExample::getNeighbors(World* w, const Point2D& p) {
   std::vector<Point2D> deltas = {Point2D::UP, Point2D::DOWN, Point2D::LEFT, Point2D::RIGHT};
   auto sideOver2 = w->GetSize() / 2;
   std::vector<Point2D> visitables;

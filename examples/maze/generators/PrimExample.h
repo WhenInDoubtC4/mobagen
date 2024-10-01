@@ -12,7 +12,7 @@ private:
   std::unordered_set<Point2D> toBeVisited;
   std::unordered_set<Point2D> visited;
   bool initialized = false;
-  std::vector<Point2D> getVisitables(World* w, const Point2D& p);
+  std::vector<Point2D> getNeighbors(World* w, const Point2D& p);
   void updateVisitedNeighbors(World* w, const Point2D& p);
   Point2D previous;
 

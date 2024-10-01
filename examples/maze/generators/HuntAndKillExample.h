@@ -11,8 +11,7 @@ private:
   std::vector<Point2D> stack;
   std::map<int, std::map<int, bool>> visited;  // naive. not optimal
   Point2D randomStartPoint(World* world);
-  std::vector<Point2D> getVisitables(World* w, const Point2D& p);
-  std::vector<Point2D> updateVisitedNeighbors(World* w, const Point2D& p);
+  std::vector<std::pair<Point2D, int>> getNeighbors(World* w, const Point2D& p, bool lookForVisitable = true);
 
 public:
   HuntAndKillExample() = default;
