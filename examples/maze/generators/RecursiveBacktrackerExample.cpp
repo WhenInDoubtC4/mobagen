@@ -3,15 +3,11 @@
 #include "RecursiveBacktrackerExample.h"
 #include <climits>
 #include <functional>
-#include <random>
 
 //Nasty, but necessary
 const std::function<void(World&, const Point2D&, const bool&)> INDEX_TO_NEIGHBOR[] = { &World::SetNorth, &World::SetEast, &World::SetSouth, &World::SetWest};
 
 bool RecursiveBacktrackerExample::Step(World* w) {
-  static std::random_device device;
-  static std::mt19937 mt(device());
-  static std::uniform_int_distribution dist(0, 4);
 
   if (stack.empty())
   {
@@ -34,7 +30,7 @@ bool RecursiveBacktrackerExample::Step(World* w) {
 
   if (!visitableNeighbors.empty())
   {
-    std::pair<Point2D, int>& selectedNeighbor = visitableNeighbors[dist(mt) % visitableNeighbors.size()];
+    std::pair<Point2D, int>& selectedNeighbor = visitableNeighbors[Random::Range(0, visitableNeighbors.size() - 1)];
 
     //Remove wall
     INDEX_TO_NEIGHBOR[selectedNeighbor.second](*w, topCell, false);

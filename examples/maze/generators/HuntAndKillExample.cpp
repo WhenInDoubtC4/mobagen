@@ -35,7 +35,7 @@ std::vector<Point2D> HuntAndKillExample::getVisitables(World* w, const Point2D& 
 
   return visitables;
 }
-std::vector<Point2D> HuntAndKillExample::getVisitedNeighbors(World* w, const Point2D& p) {
+std::vector<Point2D> HuntAndKillExample::updateVisitedNeighbors(World* w, const Point2D& p) {
   std::vector<Point2D> deltas = {{-1, 0}, {0, -1}, {1, 0}, {0, 1}};
   auto sideOver2 = w->GetSize() / 2;
   std::vector<Point2D> neighbors;
