@@ -23,7 +23,7 @@ private:
 
   std::unordered_set<Point2D> frontierSet;  // OPTIMIZATION to check faster if a point is in the queue
 
-  bool checkVisitable(const Point2D& target);
+  bool isVisitable(World* w, const Point2D& target);
   std::vector<Point2D> getVisitableNeighbors(World* w, const Point2D& current);
 };
 
