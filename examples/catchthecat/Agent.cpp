@@ -14,7 +14,8 @@ std::vector<Point2D> Agent::generatePath(World* w) {
 
   int sideOver2 = w->getWorldSideSize() / 2;
 
-  while (!frontier.empty()) {
+  while (!frontier.empty()) 
+  {
     // get the current from frontier
     Point2D current = frontier.front();
 
@@ -32,7 +33,7 @@ std::vector<Point2D> Agent::generatePath(World* w) {
     for (const Point2D& neighbor : visitableNeighbors)
     {
       // for every neighbor set the cameFrom
-      cameFrom.emplace(current, neighbor);
+      cameFrom.emplace(neighbor, current);
 
       // enqueue the neighbors to frontier and frontierset
       frontier.push(neighbor);
@@ -48,9 +49,27 @@ std::vector<Point2D> Agent::generatePath(World* w) {
   }
 
   // if the border is not infinity, build the path from border to the cat using the camefrom map
-  
+  if (borderExit != Point2D::INFINITE)
+  {
+    std::vector<Point2D> path;
 
-  // if there isnt a reachable border, just return empty vector
+    Point2D current = borderExit;
+    while (current != w->getCat())
+    {
+      path.push_back(current);
+      current = cameFrom[current];
+    }
+
+    path.push_back(w->getCat());
+
+    return path;
+  }
+  else
+  {
+    // if there isnt a reachable border, just return empty vector
+    return std::vector<Point2D>();
+  }
+ 
   
 
   // if your vector is filled from the border to the cat, the first element is the catcher move, and the last element is the cat move
