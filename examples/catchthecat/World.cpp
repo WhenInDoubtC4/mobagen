@@ -120,35 +120,39 @@ void World::OnGui(ImGuiContext* context)
 {
   ImGui::SetCurrentContext(context);
 
-  Point2D windowSize = engine->window->size();
-  float minSide = std::min(windowSize.x, windowSize.y);
-  int sideCount = sqrt(worldState.size());
-  float dPerSide = minSide / float(sideCount);
-  float halfside = dPerSide / 2;
-
-  float xStart = (windowSize.x - (sideCount * dPerSide)) / 2.f;
-
-  int i = 0;
-  int yi = 0;
-  int ry = -sideSize / 2;
-  for (float y = 0.f; y <= float(windowSize.y); y += dPerSide) 
+  if (_showCoords)
   {
-    int rx = -sideSize / 2;
-    for (float x = xStart; x < float(windowSize.x - xStart); x += dPerSide) 
-    {
-      ImGui::SetNextWindowPos(ImVec2(yi % 2 == 0 ? x - halfside : x, y));
-      ImGui::SetNextWindowSize(ImVec2(120, 20));
-      char buf[256];
-      sprintf(buf, "%i", i++);
-      ImGui::Begin(buf, nullptr,
-                    ImGuiWindowFlags_NoBackground | ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoInputs);
-      ImGui::Text("(%i, %i)", rx, ry);
-      ImGui::End();
+      Point2D windowSize = engine->window->size();
+      float minSide = std::min(windowSize.x, windowSize.y);
+      int sideCount = sqrt(worldState.size());
+      float dPerSide = minSide / float(sideCount);
+      float halfside = dPerSide / 2;
 
-      rx++;
-    }
-    ry++;
-    yi++;
+      float xStart = (windowSize.x - (sideCount * dPerSide)) / 2.f;
+
+      int i = 0;
+      int yi = 0;
+      int ry = -sideSize / 2;
+      for (float y = 0.f; y <= float(windowSize.y); y += dPerSide) 
+      {
+        int rx = -sideSize / 2;
+        for (float x = xStart; x < float(windowSize.x - xStart); x += dPerSide) 
+        {
+          ImGui::SetNextWindowPos(ImVec2(yi % 2 == 0 ? x - halfside : x, y));
+          ImGui::SetNextWindowSize(ImVec2(120, 20));
+          char buf[256];
+          sprintf(buf, "%i", i++);
+          ImGui::Begin(buf, nullptr,
+                        ImGuiWindowFlags_NoBackground | ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoInputs);
+          ImGui::SetWindowFontScale(fmin(1.0, dPerSide / 80.f));
+          ImGui::Text("%i,%i", rx, ry);
+          ImGui::End();
+
+          rx++;
+        }
+        ry++;
+        yi++;
+      }
   }
 
   ImGui::Begin("Settings", nullptr);
@@ -166,6 +170,7 @@ void World::OnGui(ImGuiContext* context)
     sideSize = (newSize / 2) * 2 + 1;
     clearWorld();
   }
+  ImGui::Checkbox("Show coords", &_showCoords);
   if (catTurn)
     ImGui::Text("Turn: CAT");
   else

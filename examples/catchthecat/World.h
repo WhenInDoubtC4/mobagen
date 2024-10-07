@@ -12,6 +12,7 @@
 
 class World : GameObject {
 private:
+  bool _showCoords = false;
   float timeBetweenAITicks = 1;
   float timeForNextTick = 1;
   bool catTurn = true;

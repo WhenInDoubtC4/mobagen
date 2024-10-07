@@ -5,6 +5,7 @@ using namespace std;
 
 std::vector<Point2D> Agent::generatePath(World* w) {
   unordered_map<Point2D, Point2D> cameFrom;  // to build the flowfield and build the path
+  unordered_map<Point2D, int> costSoFar;
 
   //Clear frontier and visited map
   frontier = {};
@@ -14,7 +15,8 @@ std::vector<Point2D> Agent::generatePath(World* w) {
   // bootstrap state
   auto catPos = w->getCat();
   printf("Cat x=%i y=%i\n", catPos.x, catPos.y);
-  frontier.push(catPos);
+  frontier.emplace(catPos, 0);
+  costSoFar.emplace(catPos, 0);
   frontierSet.insert(catPos);
   Point2D borderExit = Point2D::INFINITE;  // if at the end of the loop we dont find a border, we have to return random points
 
@@ -24,7 +26,7 @@ std::vector<Point2D> Agent::generatePath(World* w) {
   while (!frontier.empty() && !breakLoop) 
   {
     // get the current from frontier
-    Point2D current = frontier.front();
+    Point2D current = frontier.top().first;
 
     // remove the current from frontierset
     frontierSet.extract(current);
@@ -44,20 +46,28 @@ std::vector<Point2D> Agent::generatePath(World* w) {
     {
       printf("(x=%i y=%i), ", neighbor.x, neighbor.y);
 
-      // for every neighbor set the cameFrom
-      cameFrom.emplace(neighbor, current);
-
-      // enqueue the neighbors to frontier and frontierset
-      frontier.push(neighbor);
-      frontierSet.insert(neighbor);
-
-      // do this up to find a visitable border and break the loop
-      if (abs(neighbor.x) == sideOver2 || abs(neighbor.y) == sideOver2)
+      int newCost = costSoFar.at(current) + 1;
+      if (!costSoFar.contains(neighbor) || newCost < costSoFar.at(neighbor))
       {
-        printf("Border found (%i, %i)\n", neighbor.x, neighbor.y);
-        borderExit = neighbor;
-        breakLoop = true;
-        break;
+        costSoFar[neighbor] = newCost;
+        int priority;
+        priority = newCost + heuristic(borderExit, sideOver2);
+        
+        //enqueue the neighbors to frontier and frontierset
+        frontier.emplace(neighbor, priority);
+        frontierSet.insert(neighbor);
+
+        // for every neighbor set the cameFrom
+        cameFrom.emplace(neighbor, current);
+
+        // do this up to find a visitable border and break the loop
+        if (abs(neighbor.x) == sideOver2 || abs(neighbor.y) == sideOver2) 
+        {
+          printf("Border found (%i, %i)\n", neighbor.x, neighbor.y);
+          borderExit = neighbor;
+          breakLoop = true;
+          break;
+        }
       }
     }
   }
@@ -155,4 +165,10 @@ std::vector<Point2D> Agent::getVisitableNeighbors(World* w, const Point2D& curre
   }
 
   return neighbors;
+}
+
+int Agent::heuristic(const Point2D& current, int sideSize) 
+{ 
+    //Manhattan distance to closest border
+    return abs(abs(current.x) - sideSize) + abs(abs(current.y) - sideSize); 
 }
