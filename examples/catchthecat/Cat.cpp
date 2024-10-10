@@ -7,28 +7,44 @@ Point2D Cat::Move(World* world)
   _path = generatePath(world);
   if (!_path.empty())
   {
-	return _path[_path.size() - 2];
+    if (_path.size() > 2)
+      return _path[_path.size() - 2];
+    else
+      return _path.back();
   }
   else
   {
-    auto rand = Random::Range(0, 5);
     auto pos = world->getCat();
-    switch (rand) 
+    Point2D result = Point2D::INFINITE;
+
+    do
     {
-    case 0:
-        return World::NE(pos);
-    case 1:
-        return World::NW(pos);
-    case 2:
-        return World::E(pos);
-    case 3:
-        return World::W(pos);
-    case 4:
-        return World::SW(pos);
-    case 5:
-        return World::SE(pos);
-    default:
-        throw "random out of range";
-    }
+      auto rand = Random::Range(0, 5);
+      switch (rand) {
+        case 0:
+          result = World::NE(pos);
+          break;
+        case 1:
+          result = World::NW(pos);
+          break;
+        case 2:
+          result = World::E(pos);
+          break;
+        case 3:
+          result = World::W(pos);
+          break;
+        case 4:
+          result = World::SW(pos);
+          break;
+        case 5:
+          result = World::SE(pos);
+          break;
+        default:
+          throw "random out of range";
+      }
+      printf("RAND: %i\n", rand);
+    } while (result == Point2D::INFINITE || !world->catCanMoveToPosition(result));
+
+    return result;
   }
 }
