@@ -4,15 +4,13 @@
 
 Point2D Cat::Move(World* world) 
 {
-  std::vector<Point2D> path = generatePath(world);
-  if (!path.empty())
+  _path = generatePath(world);
+  if (!_path.empty())
   {
-    printf("Cat moving according to path\n");
-	return path[path.size() - 2];
+	return _path[_path.size() - 2];
   }
   else
   {
-    printf("No reachable border, cat moving randomly\n");
     auto rand = Random::Range(0, 5);
     auto pos = world->getCat();
     switch (rand) 

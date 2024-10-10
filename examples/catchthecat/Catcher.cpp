@@ -3,11 +3,11 @@
 
 Point2D Catcher::Move(World* world) 
 {
-  std::vector<Point2D> path = generatePath(world);
+  _path = generatePath(world);
 
-  if (!path.empty())
+  if (!_path.empty())
   {
-    return path.front();
+    return _path.front();
   }
   else
   {

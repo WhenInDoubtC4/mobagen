@@ -99,11 +99,25 @@ void World::OnDraw(SDL_Renderer* renderer) {
   auto catposid = (catPosition.y + sideSize / 2) * (sideSize) + catPosition.x + sideSize / 2;
   for (int i = 0; i < worldState.size();) {
     if (catposid == i)
+    {
       hex.Draw(renderer, t, Color::Red);
+    }
     else if (worldState[i])
+    {
       hex.Draw(renderer, t, Color::Blue);
+    }
     else
-      hex.Draw(renderer, t, Color::Gray);
+    {
+      Point2D currentPosition(i % sideSize - (sideSize / 2), i / sideSize - (sideSize / 2));
+      if (std::find(cat->getPath().begin(), cat->getPath().end(), currentPosition) != cat->getPath().end())
+      {
+        hex.Draw(renderer, t, Color::LightYellow);
+      }
+      else
+      {
+        hex.Draw(renderer, t, Color::Gray);
+      }
+    }
     i++;
     if ((i) % (2 * sideSize) == 0) {
       t.position.x = windowSize.x / 2 - (sideSize)*t.scale.x + (sideSize % 4 >= 2 ? 1 : 0) * t.scale.x;
@@ -220,6 +234,8 @@ void World::Update(float deltaTime) {
 Point2D World::getCat() { return catPosition; }
 
 void World::step() {
+  print();
+
   if (catWon || catcherWon) {
     clearWorld();
     return;

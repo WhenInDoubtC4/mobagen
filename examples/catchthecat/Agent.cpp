@@ -87,8 +87,6 @@ std::vector<Point2D> Agent::generatePath(World* w) {
       current = cameFrom[current];
     }
     path.push_back(w->getCat());
-    printf("end\n");
-
 
     return path;
   }
