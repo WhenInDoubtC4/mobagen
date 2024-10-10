@@ -166,7 +166,7 @@ std::vector<Point2D> Agent::getVisitableNeighbors(World* w, const Point2D& curre
 }
 
 int Agent::heuristic(const Point2D& current, int sideSize) 
-{ 
+{
     //Manhattan distance to closest border
     return abs(abs(current.x) - sideSize) + abs(abs(current.y) - sideSize); 
 }
